@@ -8,7 +8,7 @@ import pycuda.autoinit
 import math  
 import os  
 import sys  
-# from rle_compressor import RLECompressor  
+from rle_compressor import RLECompressor  
 from deflate_compressor import DEFcompressor
 from coordinate_transformer import CoordinateTransformer 
 
@@ -31,8 +31,8 @@ class ImageProcessor:
         self.image = None  # 图像数据，初始化为空
         self.width = None  # 图像的宽度，初始化为空
         self.height = None  # 图像的高度，初始化为空
-        # self.rle_compressor = RLECompressor()  # 创建RLECompressor对象，用于RLE压缩和解压
-        self.rle_compressor = DEFcompressor()  # 创建DEFCompressor对象，用于DEF压缩和解压
+        self.rle_compressor = RLECompressor()  # 创建RLECompressor对象，用于RLE压缩和解压
+        self.def_compressor = DEFcompressor()  # 创建DEFCompressor对象，用于DEF压缩和解压
         self.coordinate_transformer = None  # 坐标转换器对象，初始化为空
 
         # 加载图像并获取其尺寸
@@ -66,34 +66,29 @@ class ImageProcessor:
         x_relative, y_relative, z_relative = self.coordinate_transformer.rgb_to_coordinates(self.image)
 
         # 打印相对坐标的内存占用
-        print(f"Memory size of x_relative: {sys.getsizeof(x_relative)} bytes")
-        print(f"Memory size of y_relative: {sys.getsizeof(y_relative)} bytes")
-        print(f"Memory size of z_relative: {sys.getsizeof(z_relative)} bytes")
+        print(f"压缩前的坐标数据所占用的空间大小 : {sys.getsizeof(x_relative)+ sys.getsizeof(y_relative)+ sys.getsizeof(z_relative)} bytes")
 
-        # # 执行RLE压缩，对x、y、z坐标分别进行压缩
-        # compressed_x = self.rle_compressor.rle_encode(x_relative)
-        # compressed_y = self.rle_compressor.rle_encode(y_relative)
-        # compressed_z = self.rle_compressor.rle_encode(z_relative)
+        # 执行RLE压缩，对x、y、z坐标分别进行压缩
+        compressed_x = self.rle_compressor.rle_encode(x_relative)
+        compressed_y = self.rle_compressor.rle_encode(y_relative)
+        compressed_z = self.rle_compressor.rle_encode(z_relative)
 
-        # 执行DEF压缩，对x、y、z坐标分别进行压缩
-        compressed_x = self.rle_compressor.deflate_compress(x_relative)
-        compressed_y = self.rle_compressor.deflate_compress(y_relative)
-        compressed_z = self.rle_compressor.deflate_compress(z_relative)
+        # # 执行DEF压缩，对x、y、z坐标分别进行压缩
+        # compressed_x = self.def_compressor.deflate_compress(x_relative)
+        # compressed_y = self.def_compressor.deflate_compress(y_relative)
+        # compressed_z = self.def_compressor.deflate_compress(z_relative)
 
-        # 计算压缩后的坐标数据所占用的空间大小
-        print(f"Memory size of compoessed_x: {sys.getsizeof(compressed_x)} bytes")
-        print(f"Memory size of compoessed_y: {sys.getsizeof(compressed_y)} bytes")
-        print(f"Memory size of compoessed_z: {sys.getsizeof(compressed_z)} bytes")
+        print(f"压缩后的坐标数据所占用的空间大小 : {sys.getsizeof(compressed_x)+ sys.getsizeof(compressed_y)+ sys.getsizeof(compressed_z)} bytes")
 
-        # # 执行RLE解压，将压缩后的坐标数据解压回原来的坐标形式
-        # decoded_x = self.rle_compressor.rle_decode(compressed_x)
-        # decoded_y = self.rle_compressor.rle_decode(compressed_y)
-        # decoded_z = self.rle_compressor.rle_decode(compressed_z)
+        # 执行RLE解压，将压缩后的坐标数据解压回原来的坐标形式
+        decoded_x = self.rle_compressor.rle_decode(compressed_x, self.width, self.height)
+        decoded_y = self.rle_compressor.rle_decode(compressed_y, self.width, self.height)
+        decoded_z = self.rle_compressor.rle_decode(compressed_z, self.width, self.height)
 
-        # 执行DEF解压，将压缩后的坐标数据解压回原来的坐标形式
-        decoded_x = self.rle_compressor.deflate_decompress(compressed_x)
-        decoded_y = self.rle_compressor.deflate_decompress(compressed_y)
-        decoded_z = self.rle_compressor.deflate_decompress(compressed_z)
+        # # 执行DEF解压，将压缩后的坐标数据解压回原来的坐标形式
+        # decoded_x = self.def_compressor.deflate_decompress(compressed_x)
+        # decoded_y = self.def_compressor.deflate_decompress(compressed_y)
+        # decoded_z = self.def_compressor.deflate_decompress(compressed_z)
         
         # # CUDA加速部分
         # # 执行RLE压缩，对x、y、z坐标分别进行压缩

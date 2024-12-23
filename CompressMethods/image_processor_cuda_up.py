@@ -101,15 +101,8 @@ class ImageProcessor:
 
         # 计算总占用空间大小
         print(f"压缩后的坐标数据所占用的空间大小: {sys.getsizeof(compoessed_x_block) + sys.getsizeof(compoessed_y_block) + sys.getsizeof(compoessed_z_block) + sys.getsizeof(compoessed_x_local) + sys.getsizeof(compoessed_y_local) + sys.getsizeof(compoessed_z_local)} bytes")
-
-        # 查看压缩后的数据长度
-        print(f"compoessed_x_block length: {len(compoessed_x_block)}")
-        print(f"compoessed_y_block length: {len(compoessed_y_block)}")
-        print(f"compoessed_z_block length: {len(compoessed_z_block)}")
-        print(f"compoessed_x_local length: {len(compoessed_x_local)}")
-        print(f"compoessed_y_local length: {len(compoessed_y_local)}")
-        print(f"compoessed_z_local length: {len(compoessed_z_local)}")
-
+        
+        # 保存压缩后的坐标数据为
         if compress_method == 'rle':
             # 执行RLE解压，将压缩后的坐标数据解压回原来的坐标形式
             decoded_x_block = self.rle_compressor.rle_decode(compoessed_x_block, self.width, self.height)
