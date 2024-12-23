@@ -4,7 +4,7 @@ import time
 import logging
 
 class ZstdCompressor:
-    def __init__(self, level=3):
+    def __init__(self, level=22):
         logging.basicConfig(level=logging.INFO)
         self.zestd_compressor = zstd.ZstdCompressor(level=level)  # 创建zstd压缩器对象，支持设置压缩级别
         self.zestd_decompressor = zstd.ZstdDecompressor()  # 创建zstd解压器对象
