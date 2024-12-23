@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "compressandrecoverimage"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+numpy = "^2.2.0"
+pillow = "^11.0.0"
+pycuda = "^2024.1.2"
+logging = "^0.4.9.6"
+matplotlib = "^3.10.0"
+zstandard = "^0.23.0"
+
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
